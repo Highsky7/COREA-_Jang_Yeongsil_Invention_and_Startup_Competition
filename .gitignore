@@ -1,0 +1,15 @@
+# Python 관련
+__pycache__/
+*.py[cod]
+venv/
+env/
+*.egg-info/
+
+# Electron 관련
+node_modules/
+dist/
+out/
+
+# 기타
+.DS_Store
+
