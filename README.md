@@ -1,3 +1,6 @@
+아래는 요청하신 내용을 마크다운 문법에 맞게 작성한 `README.md`의 추가 및 수정된 부분입니다. 각 항목이 제목과 코드 블록으로 잘 구분되도록 작성하였습니다.
+
+```markdown
 # COREA - Jang Yeongsil Invention and Startup Competition
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition/build)
@@ -32,25 +35,51 @@ Clone the repository from GitHub to your local machine:
 ```bash
 git clone https://github.com/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition.git
 cd COREA-_Jang_Yeongsil_Invention_and_Startup_Competition
+```
+
 ### Python Script Setup
 
-Install Python Dependencies: Ensure that you have Python 3.9.13 installed.
-Then, install the required dependencies
+#### Install Python Dependencies
+Ensure that you have Python 3.9.13 installed. Then, install the required dependencies:
 
-### Run the Python Script: To start the transcription service, run the Python script:
+```bash
+pip install -r requirements.txt
+```
+
+#### Run the Python Script
+To start the transcription service, run the Python script:
 
 ```bash
 python transcribe_lecture_to_text.py
+```
 
 ### Electron Application Setup
 
-Install Node.js Dependencies: Navigate to the my-electron-app folder and install dependencies with npm:
+#### Install Node.js Dependencies
+Navigate to the `my-electron-app` folder and install dependencies with npm:
 
 ```bash
 cd my-electron-app
 npm install
+```
 
-### Run the Electron Application: Start the Electron application:
+#### Run the Electron Application
+Start the Electron application:
 
 ```bash
 npm start
+```
+
+## Contributing
+
+If you would like to contribute to this project, follow these steps:
+
+1. **Create an Issue**: Discuss the planned changes by creating an issue.
+2. **Implement Your Changes**: Make your changes in a separate branch.
+3. **Submit a Pull Request**: Open a pull request to merge your branch into `master`.
+4. **Code Quality**: Ensure code clarity and add comments where necessary to explain complex parts.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+```
