@@ -1,18 +1,34 @@
-# COREA-_Jang_Yeongsil_Invention_and_Startup_Competition
+# COREA - Jang Yeongsil Invention and Startup Competition
 
-![Build Status](https://img.shields.io/github/workflow/status/username/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition/build)
+![Build Status](https://img.shields.io/github/actions/workflow/status/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition/build)
 
 ## Overview
-The **COREA-_Jang_Yeongsil_Invention_and_Startup_Competition** repository is dedicated to developing an interactive lecture support system. This project provides a real-time subtitle generation and display service for students and a question notification system for professors, enhancing the online learning experience.
+The **COREA - Jang Yeongsil Invention and Startup Competition** repository is dedicated to developing an interactive lecture support system. This project provides a real-time subtitle generation and display service for students, along with a question notification system for professors, enhancing the online learning experience.
 
 ## Key Features
-- **Server Access with Random Code Generation**: Allows each student to join the lecture by generating a unique random code, enabling secure access from their devices.
-- **Real-Time Subtitle Generation**: Transcribes the professor's live lecture audio into text on the professor's device and displays subtitles on the professor's client interface.
-- **Subtitle Broadcasting**: Transmits the generated subtitles from the professor's client to each student's client, displaying real-time subtitles on the students' device screens.
-- **Student Question Submission**: Students can submit questions directly from their devices via the server's question tab. Professors receive and are notified of student questions in real-time on their devices.
+- **Server Access with Random Code Generation**: Each student can securely access the lecture by generating a unique random code to join the session from their device.
+- **Real-Time Subtitle Generation**: Transcribes the professor's live lecture audio into text on the professor's device and displays subtitles in real-time.
+- **Subtitle Broadcasting**: Transmits the generated subtitles from the professor's client to each student's client, ensuring all students see real-time subtitles on their screens.
+- **Student Question Submission**: Students can submit questions directly from their devices via the server's question tab, and professors are notified in real-time on their devices.
+
+## Folder Structure
+
+- `transcribe_lecture_to_text.py`: This Python script transcribes lecture audio to text in real-time.
+- `my-electron-app`: This folder contains the Electron-based frontend application that serves as the user interface for students and professors.
+
+## Requirements
+
+- **Python**: Version 3.9.13
+- **Electron**: Version 33.0.2
+- **Node.js**: Ensure compatibility with Electron 33.0.2.
 
 ## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/username/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition.git
 
+Follow these steps to set up and run the project.
+
+### Clone the Repository
+Clone the repository from GitHub to your local machine:
+
+```bash
+git clone https://github.com/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition.git
+cd COREA-_Jang_Yeongsil_Invention_and_Startup_Competition
