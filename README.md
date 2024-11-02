@@ -32,3 +32,25 @@ Clone the repository from GitHub to your local machine:
 ```bash
 git clone https://github.com/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition.git
 cd COREA-_Jang_Yeongsil_Invention_and_Startup_Competition
+### Python Script Setup
+
+Install Python Dependencies: Ensure that you have Python 3.9.13 installed.
+Then, install the required dependencies
+
+### Run the Python Script: To start the transcription service, run the Python script:
+
+```bash
+python transcribe_lecture_to_text.py
+
+### Electron Application Setup
+
+Install Node.js Dependencies: Navigate to the my-electron-app folder and install dependencies with npm:
+
+```bash
+cd my-electron-app
+npm install
+
+### Run the Electron Application: Start the Electron application:
+
+```bash
+npm start
