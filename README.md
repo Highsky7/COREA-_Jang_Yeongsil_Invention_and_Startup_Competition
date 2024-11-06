@@ -1,6 +1,3 @@
-아래는 요청하신 내용을 마크다운 문법에 맞게 작성한 `README.md`의 추가 및 수정된 부분입니다. 각 항목이 제목과 코드 블록으로 잘 구분되도록 작성하였습니다.
-
-```markdown
 # COREA - Jang Yeongsil Invention and Startup Competition
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/Highsky7/COREA-_Jang_Yeongsil_Invention_and_Startup_Competition/build)
