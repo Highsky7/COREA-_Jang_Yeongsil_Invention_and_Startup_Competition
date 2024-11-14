@@ -1,34 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // WebSocket 연결
-    const ws = new WebSocket("ws://localhost:6789");
+    const transcriptionWs = new WebSocket("ws://localhost:6789");
+    const questionWs = new WebSocket("ws://localhost:6790");
 
-    ws.onopen = () => console.log("WebSocket 연결 성공");
+    transcriptionWs.onopen = () => console.log("자막 WebSocket 연결 성공");
+    questionWs.onopen = () => console.log("질문 WebSocket 연결 성공");
 
-    ws.onerror = (error) => console.log("WebSocket 연결 오류:", error);
-
-    ws.onmessage = (event) => {
-        const transcriptionElement = document.getElementById("transcription");
-        transcriptionElement.innerText = event.data; // 수신한 자막을 화면에 표시
+    transcriptionWs.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === "transcription") {
+            document.getElementById("transcription").innerText = message.data;
+        }
     };
 
-    // Start Transcription 버튼 클릭 시 Python에 시작 신호 전송
+    questionWs.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === "question") {
+            const questionListElement = document.getElementById("questionList");
+            questionListElement.innerHTML = message.data
+                .map((q, index) => `<p>Q${index + 1}: ${q}</p>`)
+                .join("");
+            alert(`새로운 질문: ${message.data[message.data.length - 1]}`); // 새로운 질문 알림
+        } else if (message.type === "request") {
+            alert(`학생 요청: ${message.data}`);
+            console.log(`새로운 요청 수신: ${message.data}`);
+        }
+    };
+
     document.getElementById("startButton").onclick = () => {
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send("start");
-            console.log("Python에 자막 생성 시작 신호 전송");
+        if (transcriptionWs.readyState === WebSocket.OPEN) {
+            transcriptionWs.send("start");
+            console.log("자막 생성 시작 신호 전송");
         }
     };
 
-    // Stop Transcription 버튼 클릭 시 Python에 중지 신호 전송
     document.getElementById("stopButton").onclick = () => {
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send("stop");
-            console.log("Python에 자막 생성 중지 신호 전송");
+        if (transcriptionWs.readyState === WebSocket.OPEN) {
+            transcriptionWs.send("stop");
+            console.log("자막 생성 중지 신호 전송");
         }
-    };
-
-    ws.onclose = () => {
-        console.log("WebSocket 연결이 닫혔습니다.");
-        document.getElementById("transcription").innerText = "Disconnected from server.";
     };
 });

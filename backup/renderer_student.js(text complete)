@@ -1,10 +1,96 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const ws = new WebSocket("ws://localhost:6789");
+    const transcriptionWs = new WebSocket("ws://localhost:6789");
+    const questionWs = new WebSocket("ws://localhost:6790");
 
-    ws.onopen = () => console.log("WebSocket 연결 성공 (학생용)");
+    transcriptionWs.onopen = () => console.log("자막 WebSocket 연결 성공 (학생용)");
+    questionWs.onopen = () => console.log("질문 WebSocket 연결 성공 (학생용)");
 
-    ws.onmessage = (event) => {
+    transcriptionWs.onmessage = (event) => {
+        const message = JSON.parse(event.data);
         const transcriptionElement = document.getElementById("transcription");
-        transcriptionElement.innerText = event.data;
+        if (message.type === "transcription" && transcriptionElement) {
+            transcriptionElement.innerText = message.data;
+        }
+    };
+
+    questionWs.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        const questionListElement = document.getElementById("questionList");
+        if (message.type === "question" && questionListElement) {
+            questionListElement.innerHTML = message.data
+                .map((q, index) => `<p>Q${index + 1}: ${q}</p>`)
+                .join("");
+        }
+    };
+
+    // 언어 변경 버튼
+    document.getElementById("engButton").onclick = () => {
+        if (transcriptionWs.readyState === WebSocket.OPEN) {
+            transcriptionWs.send("language:en");
+            console.log("언어 설정을 영어로 변경 요청했습니다.");
+        } else {
+            console.warn("자막 WebSocket이 열려 있지 않습니다.");
+        }
+    };
+
+    document.getElementById("korButton").onclick = () => {
+        if (transcriptionWs.readyState === WebSocket.OPEN) {
+            transcriptionWs.send("language:ko");
+            console.log("언어 설정을 한국어로 변경 요청했습니다.");
+        } else {
+            console.warn("자막 WebSocket이 열려 있지 않습니다.");
+        }
+    };
+
+    // 질문 전송 버튼 기능
+    const sendQuestionButton = document.getElementById("sendQuestionButton");
+    if (!sendQuestionButton) {
+        console.warn("sendQuestionButton 요소를 찾을 수 없습니다. HTML 파일에서 ID를 확인하세요.");
+    } else {
+        sendQuestionButton.onclick = () => {
+            const questionInput = document.getElementById("questionInput");
+            if (questionInput && questionWs.readyState === WebSocket.OPEN) {
+                const questionText = questionInput.value.trim();
+                if (questionText) {
+                    questionWs.send(`question:${questionText}`);
+                    questionInput.value = "";
+                }
+            } else if (!questionInput) {
+                console.warn("questionInput 요소를 찾을 수 없습니다. HTML 파일에서 ID를 확인하세요.");
+            }
+        };
+    }
+
+    // 모달 관련 요소들
+    const requestButton = document.getElementById("requestButton");
+    const requestModal = document.getElementById("requestModal");
+    const requestOption1 = document.getElementById("requestOption1");
+    const requestOption2 = document.getElementById("requestOption2");
+    const closeModal = document.getElementById("closeModal");
+
+    if (!requestButton || !requestModal || !requestOption1 || !requestOption2 || !closeModal) {
+        console.warn("모달 관련 요소 중 하나를 찾을 수 없습니다. HTML 파일에서 ID를 확인하세요.");
+        return;
+    }
+
+    // request 버튼 클릭 시 모달 창 표시
+    requestButton.onclick = () => {
+        requestModal.style.display = "block";
+    };
+
+    // 모달 내 옵션 버튼 클릭 시 요청 전송
+    requestOption1.onclick = () => {
+        questionWs.send("request:교수님 자료가 안보입니다");
+        requestModal.style.display = "none"; // 모달 창 닫기
+    };
+
+    requestOption2.onclick = () => {
+        questionWs.send("request:교수님 소리가 잘 안들립니다");
+        requestModal.style.display = "none"; // 모달 창 닫기
+    };
+
+    // 모달 닫기 버튼
+    closeModal.onclick = () => {
+        requestModal.style.display = "none";
     };
 });
