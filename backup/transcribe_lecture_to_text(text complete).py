@@ -42,6 +42,21 @@ def start_audio_stream():
     stream.start()
     return stream
 
+def high_pass_filter(data, cutoff=HIGH_PASS_CUTOFF, fs=RATE, order=5):
+    """ 고역 필터를 적용하여 저주파 소음 제거 """
+    nyquist = 0.5 * fs
+    normal_cutoff = cutoff / nyquist
+    b, a = butter(order, normal_cutoff, btype='high', analog=False)
+    y = lfilter(b, a, data)
+    return y
+
+def filter_repeated_phrases(text):
+    """ 반복된 음절, 단어, 문장 필터링 """
+    filtered_text = re.sub(r'(.)\1{2,}', r'\1', text)
+    filtered_text = re.sub(r'(\b\w+\b)( \1)+', r'\1', filtered_text)
+    filtered_text = re.sub(r'(.+?)\s*(?=\1\b)', '', filtered_text)
+    return filtered_text.strip()
+
 async def transcribe_audio():
     global transcription_active, current_language
     while True:

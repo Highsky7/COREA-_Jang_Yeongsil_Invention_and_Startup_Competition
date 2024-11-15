@@ -42,6 +42,21 @@ def start_audio_stream():
     stream.start()
     return stream
 
+def high_pass_filter(data, cutoff=HIGH_PASS_CUTOFF, fs=RATE, order=5):
+    """ 고역 필터를 적용하여 저주파 소음 제거 """
+    nyquist = 0.5 * fs
+    normal_cutoff = cutoff / nyquist
+    b, a = butter(order, normal_cutoff, btype='high', analog=False)
+    y = lfilter(b, a, data)
+    return y
+
+def filter_repeated_phrases(text):
+    """ 반복된 음절, 단어, 문장 필터링 """
+    filtered_text = re.sub(r'(.)\1{2,}', r'\1', text)
+    filtered_text = re.sub(r'(\b\w+\b)( \1)+', r'\1', filtered_text)
+    filtered_text = re.sub(r'(.+?)\s*(?=\1\b)', '', filtered_text)
+    return filtered_text.strip()
+
 async def transcribe_audio():
     global transcription_active, current_language
     while True:
@@ -107,22 +122,24 @@ async def send_to_request_clients(message):
             await client.send(json.dumps(message))
         except:
             question_clients.discard(client)
-
 async def transcription_handler(websocket, path):
     transcription_clients.add(websocket)
     global current_language
     try:
         async for message in websocket:
-            if message == "start":
+            # JSON 메시지 파싱
+            data = json.loads(message)
+
+            if data["type"] == "start":
                 global transcription_active
                 transcription_active = True
                 print("자막 생성 시작 신호를 받았습니다.")
-            elif message == "stop":
+            elif data["type"] == "stop":
                 transcription_active = False
                 print("자막 생성 중지 신호를 받았습니다.")
-            elif message.startswith("language:"):
-                # 언어 설정 변경
-                new_language = message.split("language:", 1)[1]
+            elif data["type"] == "language":
+                # 언어 설정 변경 처리
+                new_language = data["data"]
                 if new_language in ["en", "ko"]:
                     current_language = new_language
                     print(f"언어가 {('영어' if new_language == 'en' else '한국어')}로 변경되었습니다.")
@@ -134,18 +151,17 @@ async def question_handler(websocket, path):
     question_clients.add(websocket)
     try:
         async for message in websocket:
-            if message.startswith("question:"):
-                question_text = message.split("question:", 1)[1]
-                questions_list.append(question_text)
-                print("새로운 질문:", question_text)
+            data = json.loads(message)
+            if data["type"] == "question":
+                questions_list.append(data["data"])
+                print("새로운 질문:", data["data"])
                 await send_to_question_clients({"type": "question", "data": questions_list})
-            elif message.startswith("request:"):
-                # 요청 메시지 처리
-                request_text = message.split("request:", 1)[1]
-                print("새로운 요청:", request_text)
-                await send_to_request_clients({"type": "request", "data": request_text})
+            elif data["type"] == "request":
+                print("새로운 요청:", data["data"])
+                await send_to_request_clients({"type": "request", "data": data["data"]})
     finally:
         question_clients.discard(websocket)
+
 
 def start_transcription_server():
     loop = asyncio.new_event_loop()

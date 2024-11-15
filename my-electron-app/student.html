@@ -1,17 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Transcription Viewer</title>
     <style>
-        /* 기본 스타일 */
+
         #transcription {
             font-size: 1.2em;
             padding: 10px;
             border: 1px solid #ccc;
             width: 80%;
             margin-bottom: 10px;
+        }
+
+        /* 질문 리스트 컨테이너 스타일 */
+        #questionContainer {
+            width: 80%;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        #questionContainer h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        /* 질문 리스트 스타일 */
+        #questionList {
+            font-size: 0.95em;
+            padding: 8px;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        #questionList p {
+            background-color: #e8f0fe; /* 질문 배경색 */
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 스크롤바 스타일 */
+        #questionList::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #questionList::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        #questionList::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        #questionList::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* 컨트롤 버튼 스타일 */
+        #controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
         }
 
         /* 축소 상태의 아이콘 버튼 스타일 */
@@ -25,9 +94,25 @@
             margin: 5px;
         }
 
-        #controls {
-            display: flex;
-            align-items: center;
+        /* 각 버튼에 이미지 설정 */
+        #minimizedSendQuestionButton {
+            background-image: url("/home/highsky/Question_mark.png");
+        }
+
+        #minimizedRequestButton {
+            background-image: url("/home/highsky/Request.png");
+        }
+
+        #minimizedEngButton {
+            background-image: url("/home/highsky/English.png");
+        }
+
+        #minimizedKorButton {
+            background-image: url("/home/highsky/Korean.png");
+        }
+
+        #maximizeButton {
+            background-image:  url("/home/highsky/maximize.png");
         }
 
         /* 축소된 상태 */
@@ -42,13 +127,13 @@
 
         /* 질문 입력 필드 스타일 */
         #questionInputContainer {
-            display: none; /* 기본적으로 숨김 */
+            display: none;
             margin-top: 10px;
         }
 
         /* 모달 스타일 */
         #requestModal {
-            display: none; /* 기본적으로 숨김 */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -71,8 +156,7 @@
 <body>
     <h1>Student - Real-time Transcription Viewer</h1>
     <div id="transcription">Waiting for transcription...</div>
-    
-    <!-- 기본 버튼들 (확장 상태) -->
+
     <div id="controls">
         <button id="sendQuestionButton">Send Question</button>
         <button id="requestButton">Request</button>
@@ -81,23 +165,25 @@
         <button id="minimizeButton">Minimize</button>
     </div>
 
-    <!-- 축소된 상태에서의 버튼들 -->
-    <div id="minimizedControls">
-        <button id="minimizedSendQuestionButton" class="icon-button" style="background-image: url('/home/highsky/Question_mark.png');"></button>
-        <button id="minimizedRequestButton" class="icon-button" style="background-image: url('/home/highsky/Request.png');"></button>
-        <button id="minimizedEngButton" class="icon-button" style="background-image: url('/home/highsky/English.png');"></button>
-        <button id="minimizedKorButton" class="icon-button" style="background-image: url('/home/highsky/Korean.png');"></button>
-        <button id="maximizeButton" class="icon-button" style="background-image: url('/home/highsky/maximize.png');"></button>
-    </div>
-
-    <!-- 질문 입력 필드 -->
-    <div id="questionInputContainer">
-        <input type="text" id="minimizedQuestionInput" placeholder="Type your question here" />
+    <div id="questionInputContainer" style="display: none;">
+        <input type="text" id="minimizedQuestionInput" placeholder="Type your question here">
         <button id="submitQuestionButton">Send</button>
     </div>
 
-    <!-- 요청 모달 창 -->
-    <div id="requestModal">
+    <div id="questionContainer">
+        <h2>Questions</h2>
+        <div id="questionList">No questions yet.</div>
+    </div>
+    <!-- 축소된 상태에서의 버튼들 -->
+    <div id="minimizedControls">
+        <button id="minimizedSendQuestionButton" class="icon-button"></button>
+        <button id="minimizedRequestButton" class="icon-button"></button>
+        <button id="minimizedEngButton" class="icon-button"></button>
+        <button id="minimizedKorButton" class="icon-button"></button>
+        <button id="maximizeButton" class="icon-button"></button>
+    </div>
+
+    <div id="requestModal" style="display: none;">
         <div id="modalContent">
             <p>Select your request:</p>
             <button id="requestOption1">교수님 자료가 안보입니다</button>
