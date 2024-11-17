@@ -130,19 +130,16 @@ async def transcription_handler(websocket, path):
             # JSON 메시지 파싱
             data = json.loads(message)
 
-            if data["type"] == "start":
+            if data["type"] == "start_transcription":
                 global transcription_active
                 transcription_active = True
                 print("자막 생성 시작 신호를 받았습니다.")
-            elif data["type"] == "stop":
+            elif data["type"] == "stop_transcription":
                 transcription_active = False
                 print("자막 생성 중지 신호를 받았습니다.")
-            elif data["type"] == "language":
-                # 언어 설정 변경 처리
-                new_language = data["data"]
-                if new_language in ["en", "ko"]:
-                    current_language = new_language
-                    print(f"언어가 {('영어' if new_language == 'en' else '한국어')}로 변경되었습니다.")
+            elif data["type"] == "set_language":
+                current_language = data["data"]
+                print(f"Language set to: {current_language.upper()}")
     finally:
         transcription_clients.discard(websocket)
 

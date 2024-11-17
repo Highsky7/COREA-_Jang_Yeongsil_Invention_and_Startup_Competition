@@ -1,197 +1,137 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Transcription Viewer</title>
+    <title>Lecture Room - Student</title>
     <style>
-
-        #transcription {
-            font-size: 1.2em;
-            padding: 10px;
-            border: 1px solid #ccc;
-            width: 80%;
-            margin-bottom: 10px;
-        }
-
-        /* 질문 리스트 컨테이너 스타일 */
-        #questionContainer {
-            width: 80%;
-            margin: 0 auto;
-            padding-top: 20px;
-        }
-
-        #questionContainer h2 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        /* 질문 리스트 스타일 */
-        #questionList {
-            font-size: 0.95em;
-            padding: 8px;
-            border: 1px solid #ccc;
-            max-height: 200px;
-            overflow-y: auto;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #f9f9f9;
-            border-radius: 5px;
         }
-
-        #questionList p {
-            background-color: #e8f0fe; /* 질문 배경색 */
-            padding: 5px 10px;
-            margin: 5px 0;
-            border-radius: 4px;
-            color: #333;
-            font-weight: 500;
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
         }
-
-        /* 스크롤바 스타일 */
-        #questionList::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #questionList::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        #questionList::-webkit-scrollbar-thumb {
-            background-color: #888;
-            border-radius: 4px;
-        }
-
-        #questionList::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        /* 컨트롤 버튼 스타일 */
-        #controls {
+        header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
-        button {
+        .lecture-info {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .language-buttons button {
             padding: 8px 12px;
-            font-size: 0.9em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        button:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* 축소 상태의 아이콘 버튼 스타일 */
-        .icon-button {
-            width: 40px;
-            height: 40px;
-            background-size: contain;
-            background-repeat: no-repeat;
             border: none;
+            background-color: #7230e1;
+            color: white;
             cursor: pointer;
-            margin: 5px;
-        }
-
-        /* 각 버튼에 이미지 설정 */
-        #minimizedSendQuestionButton {
-            background-image: url("/home/highsky/Question_mark.png");
-        }
-
-        #minimizedRequestButton {
-            background-image: url("/home/highsky/Request.png");
-        }
-
-        #minimizedEngButton {
-            background-image: url("/home/highsky/English.png");
-        }
-
-        #minimizedKorButton {
-            background-image: url("/home/highsky/Korean.png");
-        }
-
-        #maximizeButton {
-            background-image:  url("/home/highsky/maximize.png");
-        }
-
-        /* 축소된 상태 */
-        #minimizedControls {
-            display: none;
-            flex-direction: column;
-            align-items: flex-end;
-            position: absolute;
-            right: 10px;
-            top: 10px;
-        }
-
-        /* 질문 입력 필드 스타일 */
-        #questionInputContainer {
-            display: none;
-            margin-top: 10px;
-        }
-
-        /* 모달 스타일 */
-        #requestModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        #modalContent {
-            background-color: white;
-            padding: 20px;
-            margin: 15% auto;
-            width: 300px;
-            text-align: center;
             border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .language-buttons button:hover {
+            background-color: #7230e1;
+        }
+        .transcription {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .question-box {
+            margin-bottom: 15px;
+        }
+        #questionInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .submit-button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #7230e1;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .submit-button:hover {
+            background-color: #7230e1;
+        }
+        .request-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .request-buttons button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #f44336;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .request-buttons button:hover {
+            background-color: #d32f2f;
+        }
+        .question-list {
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <h1>Student - Real-time Transcription Viewer</h1>
-    <div id="transcription">Waiting for transcription...</div>
-
-    <div id="controls">
-        <button id="sendQuestionButton">Send Question</button>
-        <button id="requestButton">Request</button>
-        <button id="engButton">ENG</button>
-        <button id="korButton">KOR</button>
-        <button id="minimizeButton">Minimize</button>
-    </div>
-
-    <div id="questionInputContainer" style="display: none;">
-        <input type="text" id="minimizedQuestionInput" placeholder="Type your question here">
-        <button id="submitQuestionButton">Send</button>
-    </div>
-
-    <div id="questionContainer">
-        <h2>Questions</h2>
-        <div id="questionList">No questions yet.</div>
-    </div>
-    <!-- 축소된 상태에서의 버튼들 -->
-    <div id="minimizedControls">
-        <button id="minimizedSendQuestionButton" class="icon-button"></button>
-        <button id="minimizedRequestButton" class="icon-button"></button>
-        <button id="minimizedEngButton" class="icon-button"></button>
-        <button id="minimizedKorButton" class="icon-button"></button>
-        <button id="maximizeButton" class="icon-button"></button>
-    </div>
-
-    <div id="requestModal" style="display: none;">
-        <div id="modalContent">
-            <p>Select your request:</p>
-            <button id="requestOption1">교수님 자료가 안보입니다</button>
-            <button id="requestOption2">교수님 소리가 잘 안들립니다</button>
-            <button id="closeModal">Close</button>
+    <div class="container">
+        <header>
+            <div class="lecture-info">Lecture: 유체역학</div>
+            <div class="language-select">
+                Language:
+                <select id="languageSelect">
+                    <option value="ko">KOR</option>
+                    <option value="en">ENG</option>
+                </select>
+            </div>
+        </header>
+        <div id="transcription" class="transcription">
+            Waiting for transcription...
+        </div>
+        <div class="question-box">
+            <input id="questionInput" type="text" placeholder="Type your question here">
+            <button id="submitButton" class="submit-button">Submit</button>
+        </div>
+        <div class="request-box">
+            <label for="requestSelect">Request:</label>
+            <select id="requestSelect">
+                <option value="교수님 목소리가 잘 안들립니다">교수님 목소리가 잘 안들립니다</option>
+                <option value="자료가 잘 보이지 않습니다">자료가 잘 보이지 않습니다</option>
+                <option value="강의 속도가 너무 빠릅니다">강의 속도가 너무 빠릅니다</option>
+            </select>
+            <button id="sendRequestButton" class="submit-button">Send Request</button>
+        </div>
+        <div class="question-list">
+            <h3>Questions list:</h3>
+            <ul id="questionList"></ul>
         </div>
     </div>
-
     <script src="renderer_student.js"></script>
 </body>
 </html>

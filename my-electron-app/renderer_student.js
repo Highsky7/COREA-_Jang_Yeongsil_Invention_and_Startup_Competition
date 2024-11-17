@@ -1,127 +1,104 @@
 document.addEventListener("DOMContentLoaded", () => {
     const transcriptionWs = new WebSocket("ws://localhost:6789");
     const questionWs = new WebSocket("ws://localhost:6790");
-
-    transcriptionWs.onopen = () => console.log("자막 WebSocket 연결 성공 (학생용)");
-    questionWs.onopen = () => console.log("질문 WebSocket 연결 성공 (학생용)");
-
-    const transcriptionElement = document.getElementById("transcription");
     const questionList = document.getElementById("questionList");
-    const controls = document.getElementById("controls");
-    const minimizedControls = document.getElementById("minimizedControls");
-    const questionInputContainer = document.getElementById("questionInputContainer");
-    const minimizedQuestionInput = document.getElementById("minimizedQuestionInput");
+    const questionInput = document.getElementById("questionInput");
+    const submitButton = document.getElementById("submitButton");
+    let previousQuestions = []; // 이전 질문 저장 변수
 
+    // 요청 전송 기능 추가
+    const requestSelect = document.getElementById("requestSelect");
+    const sendRequestButton = document.getElementById("sendRequestButton");
 
-    // WebSocket 메시지 수신 처리
+    // WebSocket 연결 성공 시 로깅
+    transcriptionWs.onopen = () => {
+        console.log("Transcription WebSocket connected (Student)");
+    };
+    questionWs.onopen = () => {
+        console.log("Question WebSocket connected (Student)");
+    };
+
+    // WebSocket 연결 실패 처리
+    transcriptionWs.onerror = (error) => {
+        console.error("Transcription WebSocket error:", error);
+    };
+    questionWs.onerror = (error) => {
+        console.error("Question WebSocket error:", error);
+    };
+
+    // WebSocket 메시지 처리
     transcriptionWs.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        if (message.type === "transcription" && transcriptionElement) {
-            transcriptionElement.innerText = message.data;
+        try {
+            const message = JSON.parse(event.data);
+            if (message.type === "transcription") {
+                document.getElementById("transcription").innerText = message.data;
+            }
+        } catch (error) {
+            console.error("Error parsing transcription message:", error);
         }
     };
 
-    // 실시간 질문 수신 및 업데이트
     questionWs.onmessage = (event) => {
+        try {
             const message = JSON.parse(event.data);
             if (message.type === "question") {
+                const currentQuestions = message.data || [];
+                // 새로 추가된 질문 필터링
+                const newQuestions = currentQuestions.slice(previousQuestions.length);
+
                 // 질문 리스트 업데이트
-                const questions = message.data || [];
-                questionList.innerHTML = questions
+                questionList.innerHTML = currentQuestions
                     .map((q, index) => `<p>Q${index + 1}: ${q}</p>`)
                     .join("");
+
+                // 이전 질문 리스트를 업데이트
+                previousQuestions = [...currentQuestions];
+            }
+        } catch (error) {
+            console.error("Error processing question message:", error);
         }
     };
 
-
-    // 언어 설정 변경
-    function setLanguage(language) {
-        if (transcriptionWs.readyState === WebSocket.OPEN) {
-            transcriptionWs.send(JSON.stringify({ type: "language", data: language }));
-            console.log(`언어 설정을 ${language === "en" ? "영어" : "한국어"}로 변경 요청`);
-        } else {
-            console.warn("자막 WebSocket이 연결되어 있지 않습니다.");
+    // 질문 전송 함수 (공통 처리)
+    const sendQuestion = () => {
+        const question = questionInput.value.trim();
+        if (question && questionWs.readyState === WebSocket.OPEN) {
+            questionWs.send(JSON.stringify({ type: "question", data: question }));
+            questionInput.value = ""; // 입력 필드 초기화
         }
-    }
+    };
 
-    // 질문 전송
-    function sendQuestion() {
-        const questionText = minimizedQuestionInput.value.trim();
-        if (questionText && questionWs.readyState === WebSocket.OPEN) {
-            questionWs.send(JSON.stringify({ type: "question", data: questionText }));
-            minimizedQuestionInput.value = ""; // 입력 필드 초기화
-        } else {
-            console.warn("질문 WebSocket이 연결되어 있지 않거나 입력 필드가 비어 있습니다.");
+    // Enter 키 입력 처리
+    questionInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            sendQuestion();
         }
-    }
+    });
 
-    // 요청 모달 창 열기
-    function openRequestModal() {
-        const requestModal = document.getElementById("requestModal");
-        if (requestModal) {
-            requestModal.style.display = "block";
-        } else {
-            console.error("requestModal 요소를 찾을 수 없습니다.");
-        }
-    }
+    // Submit 버튼 클릭 처리
+    submitButton.addEventListener("click", () => {
+        sendQuestion();
+    });
 
-    // 요청 전송
-    function sendRequest(requestText) {
+    sendRequestButton.addEventListener("click", () => {
+        const selectedRequest = requestSelect.value;
         if (questionWs.readyState === WebSocket.OPEN) {
-            questionWs.send(JSON.stringify({ type: "request", data: requestText }));
+            questionWs.send(JSON.stringify({ type: "request", data: selectedRequest }));
+            console.log(`Request sent: ${selectedRequest}`);
         } else {
-            console.warn("질문 WebSocket이 연결되어 있지 않습니다.");
+            console.warn("WebSocket is not open. Request not sent.");
         }
-    }
+    });
 
-    // UI 상태 전환 (축소)
-    document.getElementById("minimizeButton").onclick = () => {
-        controls.style.display = "none";
-        minimizedControls.style.display = "flex";
-        transcriptionElement.style.width = "80%";
-        transcriptionElement.style.margin = "0 auto";
-    };
-
-    // UI 상태 전환 (확대)
-    document.getElementById("maximizeButton").onclick = () => {
-        controls.style.display = "flex";
-        minimizedControls.style.display = "none";
-        questionInputContainer.style.display = "none";
-        transcriptionElement.style.width = "80%";
-    };
-
-    // 질문 입력 필드 토글
-    function toggleQuestionInput() {
-        questionInputContainer.style.display =
-            questionInputContainer.style.display === "none" ? "block" : "none";
-    }
-
-    // 버튼 이벤트 등록
-    document.getElementById("sendQuestionButton").onclick = toggleQuestionInput;
-    document.getElementById("minimizedSendQuestionButton").onclick = toggleQuestionInput;
-    document.getElementById("submitQuestionButton").onclick = sendQuestion;
-
-    document.getElementById("requestButton").onclick = openRequestModal;
-    document.getElementById("minimizedRequestButton").onclick = openRequestModal;
-
-    document.getElementById("engButton").onclick = () => setLanguage("en");
-    document.getElementById("minimizedEngButton").onclick = () => setLanguage("en");
-
-    document.getElementById("korButton").onclick = () => setLanguage("ko");
-    document.getElementById("minimizedKorButton").onclick = () => setLanguage("ko");
-
-    // 요청 옵션 버튼 이벤트 등록
-    document.getElementById("requestOption1").onclick = () => {
-        sendRequest("교수님 자료가 안보입니다");
-        document.getElementById("requestModal").style.display = "none";
-    };
-
-    document.getElementById("requestOption2").onclick = () => {
-        sendRequest("교수님 소리가 잘 안들립니다");
-        document.getElementById("requestModal").style.display = "none";
-    };
-
-    document.getElementById("closeModal").onclick = () => {
-        document.getElementById("requestModal").style.display = "none";
-    };
+    // 언어 변경 처리
+    const languageSelect = document.getElementById("languageSelect");
+    languageSelect.addEventListener("change", (event) => {
+        const selectedLanguage = event.target.value;
+        if (transcriptionWs.readyState === WebSocket.OPEN) {
+            transcriptionWs.send(JSON.stringify({ type: "set_language", data: selectedLanguage }));
+            console.log(`Language set to: ${selectedLanguage === "en" ? "English" : "Korean"}`);
+        } else {
+            console.warn("Transcription WebSocket is not open. Language not set.");
+        }
+    });
 });
