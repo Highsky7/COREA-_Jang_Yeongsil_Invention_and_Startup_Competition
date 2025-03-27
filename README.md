@@ -17,14 +17,34 @@ The **COREA - Jang Yeongsil Invention and Startup Competition** repository is de
 - `my-electron-app`: This folder contains the Electron-based frontend application that serves as the user interface for students and professors.
 - `result`: This folder contains PNG image files that demonstrate how the actual screens appear for each feature during use.
 
-## Screenshots
+## Result Images
 
-![English Translation](result/translation_Eng_student.png)
-![Korean Transcription](result/Transcription_student.png)
-![Before Request](result/Before_request_student.png)
-![After Request](result/After_request_professor.png)
-![Before Question](result/Before_question_student.png)
-![After Question](result/After_question_student.png)
+<table>
+  <tr>
+    <td align="center">
+      <img src="result/translation_Eng_student.png" alt="English Translation" width="300">
+    </td>
+    <td align="center">
+      <img src="result/Transcription_student.png" alt="Korean Transcription" width="300">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="result/Before_request_student.png" alt="Before Request" width="300">
+    </td>
+    <td align="center">
+      <img src="result/After_request_professor.png" alt="After Request" width="300">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="result/Before_question_student.png" alt="Before Question" width="300">
+    </td>
+    <td align="center">
+      <img src="result/After_question_student.png" alt="After Question" width="300">
+    </td>
+  </tr>
+</table>
 
 ## Requirements
 
