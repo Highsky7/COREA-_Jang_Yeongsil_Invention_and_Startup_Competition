@@ -22,7 +22,7 @@ The **COREA - Jang Yeongsil Invention and Startup Competition** repository is de
 ![English Translation](result/translation_Eng_student.png)
 ![Korean Transcription](result/Transcription_student.png)
 ![Before Request](result/Before_request_student.png)
-![After Request](result/After_request_student.png)
+![After Request](result/After_request_professor.png)
 ![Before Question](result/Before_question_student.png)
 ![After Question](result/After_question_student.png)
 
