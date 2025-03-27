@@ -37,11 +37,7 @@ cd COREA-_Jang_Yeongsil_Invention_and_Startup_Competition
 ### Python Script Setup
 
 #### Install Python Dependencies
-Ensure that you have Python 3.9.13 installed. Then, install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
+Ensure that you have Python 3.9.13 installed.
 
 #### Run the Python Script
 To start the transcription service, run the Python script:
@@ -79,4 +75,3 @@ If you would like to contribute to this project, follow these steps:
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
