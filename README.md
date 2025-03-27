@@ -15,6 +15,16 @@ The **COREA - Jang Yeongsil Invention and Startup Competition** repository is de
 
 - `transcribe_lecture_to_text.py`: This Python script transcribes lecture audio to text in real-time.
 - `my-electron-app`: This folder contains the Electron-based frontend application that serves as the user interface for students and professors.
+- `result`: This folder contains PNG image files that demonstrate how the actual screens appear for each feature during use.
+
+## Screenshots
+
+![English Translation](result/translation_Eng_student.png)
+![Korean Transcription](result/Transcription_student.png)
+![Before Request](result/Before_request_student.png)
+![After Request](result/After_request_student.png)
+![Before Question](result/Before_question_student.png)
+![After Question](result/After_question_student.png)
 
 ## Requirements
 
